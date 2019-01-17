@@ -21,6 +21,9 @@ class PostsController extends AppController
             'index',
             'view'
         ]);
+        $this->loadModel('Comments');
+        $comments  = $this->Comments->find('all');
+
     }
 
     /**
@@ -35,7 +38,7 @@ class PostsController extends AppController
         ];
         $posts = $this->paginate($this->Posts);
 
-        $this->set(compact('posts'));
+        $this->set(compact('posts','comments'));
     }
 
     /**
@@ -51,7 +54,14 @@ class PostsController extends AppController
             'contain' => ['Users']
         ]);
 
+
+        $this->loadModel('Comments');
+        $comments  = $this->Comments->find()
+            ->where(['post_id'=>$id])
+            ->order('created DESC');
+
         $this->set('post', $post);
+        $this->set('comments',$comments);
     }
 
     /**
@@ -67,6 +77,7 @@ class PostsController extends AppController
 
             $post->slug = $this->Posts->createSlug($post->title );
 
+            $post->user_id = $this->session->read('Auth.User.id');
             if ($this->Posts->save($post)) {
                 $this->Flash->success(__('The post has been saved.'));
 
@@ -76,6 +87,7 @@ class PostsController extends AppController
         }
         $users = $this->Posts->Users->find('list', ['limit' => 200]);
         $this->set(compact('post', 'users'));
+
     }
 
     /**

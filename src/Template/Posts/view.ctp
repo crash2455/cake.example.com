@@ -56,3 +56,32 @@
         <?= $this->Text->autoParagraph(h($post->body)); ?>
     </div>
 </div>
+<div class="comments index large-9 medium-8 columns content right">
+    <h3><?= __('Comments') ?></h3>
+    <table cellpadding="0" cellspacing="0">
+        <tbody>
+            <?php foreach ($comments as $comment): ?>
+            <tr>
+                <td class="small-3"><h5><?= $comment->first_name ?></h5><br><?= $comment->comment ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<div class="comments form large-9 medium-8 columns content">
+    <?= $this->Form->create($comments, ['url' => ['controller' => 'Comments', 'action'=>'add']]) ?>
+    <fieldset>
+        <legend><?= __('Add Comment') ?></legend>
+        <?php
+
+            echo $this->Form->control('first_name');
+            echo $this->Form->control('last_name');
+            echo $this->Form->control('email');
+            echo $this->Form->control('comment',['type'=>'textarea']);
+            echo $this->Form->control('post_id',['type'=>'hidden','value'=>$post->id]);
+        ?>
+    </fieldset>
+    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->end() ?>
+</div>
